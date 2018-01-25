@@ -211,6 +211,7 @@ void PCM0(void) {
 //═════════════════════════════════════════════════════════════════════════════
 
 void MOD1(void) {
+#ifdef MIXER
   modinfo *mymodinfo=(modinfo *)v.aux;
   int an=v.an/big2, al=v.al/big2;
 
@@ -228,6 +229,7 @@ void MOD1(void) {
     if(ModButton && ModWindow==v.orden) wput(v.ptr, an, al, 2, 39, -215);
     else                                wput(v.ptr, an, al, 2, 39, -235);
   }
+#endif
 }
 
 void MOD2(void) {
@@ -302,6 +304,7 @@ void MOD0(void) {
 
 void FreeMOD(void)
 {
+#ifdef MIXER
   Mix_HaltMusic();
   Mix_SetPostMix(NULL, NULL);
 /*  switch(SongType)
@@ -311,6 +314,8 @@ void FreeMOD(void)
     case MOD: judas_freemod(); break;
   }
 */
+#endif
+
   SongType=0;
 }
 int songpos;
@@ -351,7 +356,7 @@ int GetSongLine(void)
 
 void mostrar_mod_meters(void)
 {
-	
+#ifdef MIXER	
   modinfo *mymodinfo=(modinfo *)v.aux;
   int     an=v.an/big2, al=v.al/big2;
   int     x, y, con, canal, ancho_barra;
@@ -410,6 +415,7 @@ void mostrar_mod_meters(void)
     }
   }
   
+#endif // MIXER
 }
 
 //═════════════════════════════════════════════════════════════════════════════
@@ -1359,11 +1365,15 @@ void EditSound2(void)
 
 void EditSound3(void)
 {
+#ifdef MIXER
 //	printf("TODO - divpcm.cpp EditSound3\n");
 Mix_HaltChannel(-1);
 #ifdef NOTYET
   if(judas_channel[0].smp) judas_stopsample(0);
 #endif
+
+#endif
+
 }
 
 //═════════════════════════════════════════════════════════════════════════════

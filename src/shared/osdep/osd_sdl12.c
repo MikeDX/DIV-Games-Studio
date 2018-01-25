@@ -3,6 +3,11 @@
 
 #include "osd_sdl12.h"
 
+#ifdef N3DS_
+
+#include "n3ds.c"
+
+#else
 
 // key buffer
 uint8_t OSDEP_key[2048];
@@ -26,8 +31,18 @@ void OSDEP_Init(void) {
   SDL_putenv("SDL_VIDEO_WINDOW_POS=center"); 
 #endif
 
+#ifdef N3DS
 	SDL_Init( SDL_INIT_EVERYTHING);
+#else
+	SDL_Init( 
+		SDL_INIT_TIMER | 
+//		SDL_INIT_AUDIO |
+		SDL_INIT_VIDEO |
+		SDL_INIT_JOYSTICK |
+		SDL_INIT_EVENTTHREAD
+	);
 
+#endif
 }
 
 void OSDEP_Quit(void) {
@@ -345,3 +360,5 @@ const _c_center=76
 #endif
 
 }
+
+#endif

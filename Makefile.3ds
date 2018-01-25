@@ -1,0 +1,143 @@
+#lazy makefile 
+# for compiling on android for android
+# also should work for platforms with no cmake
+# which is why this is here in the first place!
+
+ifeq ($(strip $(DEVKITARM)),)
+$(error "Please set DEVKITARM in your environment. export DEVKITARM=<path to>devkitARM")
+endif
+
+TOPDIR ?= $(CURDIR)
+include $(DEVKITARM)/3ds_rules
+
+#CC=gcc
+EXECUTABLE=div2-ide
+RUNTIME=div2-run
+RUNTIME1=div1-run
+
+TARGET_LIB = div2-run.elf
+
+OSDEP = src/shared/osdep.c src/shared/unzip.c src/shared/osdep/osd_sdl12.c 
+#src/shared/mikedll.c
+#FMEMOPEN = src/osx/fmemopen.c 
+SOURCES=$(wildcard src/*.c) $(wildcard src/shared/lib/sdlgfx/*.c) ${OSDEP} ${FMEMOPEN} src/shared/lib/zip/src/zip.c
+#*/
+SHAREDSRC=$(wildcard src/shared/run/*.c) 
+#*/
+VPESRC=$(wilcard src/runtime/vpe/*.c)
+#*/
+RUNSOURCES=$(wildcard src/runtime/*.c) ${SHAREDSRC} ${VPESRC} ${OSDEP} ${FMEMOPEN}
+#*/
+RUN1SOURCES=$(wildcard src/div1run/*.c) ${SHAREDSRC} ${OSDEP} ${FMEMOPEN} 
+
+#src/runtime/debug/d.c
+# $(wildcard src/osdep/*.c)
+
+#*/
+VISOR_SOURCES=$(wildcard src/visor/*.c)
+#*/
+VPE_SOURCES=$(wildcard src/runtime/vpe/*.c)
+#*/
+#$(CSRC:%.c=obj/%.c.o) obj/src
+OBJS=$(SOURCES:%.c=divide/%.c.o) 
+RUNOBJS=$(RUNSOURCES:%.c=div2/%.c.o)
+RUN1OBJS=$(RUN1SOURCES:%.c=div1/%.c.o)
+
+VISOROBJS=$(VISOR_SOURCES:.c=.o)
+VPEOBJS=$(VPE_SOURCES:.c=.o)
+
+
+
+CTRULIB	:= $(DEVKITPRO)/libctru
+INCLUDES = -I./include -I$(CTRULIB)/include -Isrc/shared -I$(DEVKITPRO)/portlibs/armv6k/include -Isrc/runtime
+
+#---------------------------------------------------------------------------------
+# options for code generation
+#---------------------------------------------------------------------------------
+ARCH		:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
+CFLAGS		:=	-g -Wall -O2 -mword-relocations -fno-short-enums \
+			-fomit-frame-pointer -ffast-math \
+			$(ARCH)
+CFLAGS		+=	$(INCLUDES) -DARM11 -D_3DS -D__3DS__ -DSDL_BUILDING_3DS -DMIXER -DN3DS -DN3DS=1 -DRDEBUG=\"divdbg-N3DS\" -DRUNTIME=\"divrun-N3DS\" -DSDL=1 -DTARGET=\"div-N3DS\" -DUSE_FLI -DZLIB -D_GNU_SOURCE -DDIV2
+CXXFLAGS	:=      $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++11
+ASFLAGS		:=	-g $(ARCH)
+LDFLAGS		:=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map) -L/home/mike/devkitProlib/ -Wl,-rpath,/home/mike/devkitProlib -L/home/mike/devkitPro/portlibs/armv6k/lib/ -Wl,-rpath,/home/mike/devkitPro/portlibs/armv6k/lib -L/home/mike/devkitPro/libctru/lib -Wl,-rpath,/home/mike/devkitPro/libctru/lib
+
+CFLAGS		+= -Wno-unused-variable
+
+LIBS	:= -lm -lSDL -lctru -lSDL_mixer -lmad -lvorbis -logg -lvorbisfile -lm -lSDL -lctru -lSDL_mixer -lmad -lvorbis -logg -lvorbisfile -lz -lm
+
+all: dirs $(RUNOBJS) $(TARGET_LIB)
+
+$(TARGET_LIB): $(RUNOBJS)
+	$(CC) $(ARCH) -o $@ $^ $(LIBS) $(LDFLAGS)
+
+install: $(TARGET_LIB)
+	@mkdir -p "$(DEVKITPRO)/portlibs/armv6k/lib"
+	@cp  $(TARGET_LIB) "$(DEVKITPRO)/portlibs/armv6k/lib"
+	@mkdir -p "$(DEVKITPRO)/portlibs/armv6k/include/SDL"
+	@cp include/*.h "$(DEVKITPRO)/portlibs/armv6k/include/SDL"
+	@echo "Installed!"
+
+clean:
+	@rm -rf $(RUNOBJS) $(TARGET_LIB)
+#LIBFLAGS= -lm -ldl  -lz  -lSDL_image -ltiff -ljpeg -lpng -lz -lSDL_ttf -lfreetype -lSDL_mixer -lvorbisfile -lvorbis -logg -lstdc++ -lSDL
+
+
+DROIDLIBFLAGS= -lSDL -lSDL_image -lSDL_mixer -lm -lz -ljpeg
+# -lSDL_net -ltiff -ljpeg -lpng -lz -lSDL_ttf -lfreetype -lSDL_mixer -lvorbisfile -lvorbis -logg -lstdc++ -Wl,--no-undefined -lm
+SCFLAGS= -g -w -fpermissive  -Isrc/shared -Isrc -funsigned-char -DMIXER -DZLIB -DN3DS -DMODE8 -DSDL -DRUNTIME=\"divrun\"
+#-DDIVDLL
+#-Isrc/div1run
+#-Isrc/runtime
+#-DDEBUG 
+debug :  dirs $(EXECUTABLE) $(RUNTIME) $(RUNTIME1)
+release : dirs $(EXECUTABLE) $(RUNTIME) $(RUNTIME1)
+
+all: dirs $(EXECUTABLE) $(RUNTIME) $(RUNTIME1) 
+dirs: divide div1 div2
+
+divide:
+	mkdir -p divide/src/shared/lib/sdlgfx
+	mkdir -p divide/src/shared/lib/zip/src
+	mkdir -p divide/src/shared/osdep
+	mkdir -p divide/src/osx
+	
+div1:
+	mkdir -p div1/src/shared/run
+	mkdir -p div1/src/div1run
+	mkdir -p div1/src/shared/osdep
+	mkdir -p div1/src/osx
+
+div2: 
+	mkdir -p div2/src/shared/run
+	mkdir -p div2/src/runtime/vpe
+	mkdir -p div2/src/shared/osdep
+	mkdir -p div2/src/osx
+
+${EXECUTABLE}: CFLAGS = ${SCFLAGS} -DDIV2
+$(EXECUTABLE): $(OBJS) $(VISOROBJS) 
+	 $(CC) $(OBJS) $(VISOROBJS) $(DROIDLIBFLAGS) -o $@
+
+divide/%.c.o: %.c
+	$(CC) $(CFLAGS) -Isrc -c $< -o divide/$<.o
+
+#	 $(CC) -c $(CFLAGS)  $< -o $@
+
+div1/%.c.o: %.c
+	 $(CC) -c $(CFLAGS)  -Isrc $< -o div1/$<.o
+
+div2/%.c.o: %.c
+	 $(CC) -c $(CFLAGS) -Isrc $< -o div2/$<.o
+
+${RUNTIME}: CFLAGS = -DDIV2 -Isrc/runtime ${SCFLAGS}
+$(RUNTIME): $(RUNOBJS) $(VPEOBJS)
+	 $(CC) $(RUNOBJS)  $(VPEOBJS) $(DROIDLIBFLAGS) -o $@
+
+${RUNTIME1}: CFLAGS = -DDIV1 -Isrc/div1run ${SCFLAGS}
+$(RUNTIME1): $(RUN1OBJS) 
+	 $(CC) $(RUN1OBJS) $(DROIDLIBFLAGS) -o $@
+
+
+clean_x:
+	 rm -f   $(EXECUTABLE) $(OBJS) $(RUNOBJS) $(RUN1OBJS) $(VISOROBJS) $(RUNTIME) $(VPEOBJS) $(RUNTIME1)

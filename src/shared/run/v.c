@@ -263,6 +263,10 @@ SDL_ShowCursor(SDL_DISABLE);
 		vga=OSDEP_SetVideoMode(vga_an, vga_al, 8, 0);
 #else
 
+#ifdef N3DS
+    vga=OSDEP_SetVideoMode(vga_an, vga_al, 24, 0);
+#endif
+
 #ifdef PANDORA
 		vga=OSDEP_SetVideoMode(vga_an, vga_al, 8, 1);
 #else

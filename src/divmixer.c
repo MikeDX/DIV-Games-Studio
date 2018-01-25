@@ -133,6 +133,7 @@ void SetCDVolume (UWORD volumen)
 
 void InitMixer(UWORD card, UWORD address, UWORD master, UWORD voc, UWORD cd)
 {
+#ifdef MIXER
   voc=(master<voc)?master:voc;
   cd=(master<cd)?master:cd;
   cd=Mix_VolumeMusic(cd*8);
@@ -152,6 +153,8 @@ void InitMixer(UWORD card, UWORD address, UWORD master, UWORD voc, UWORD cd)
         SetCDVolume(CD);
     }
 #endif
+
+#endif // MIXER
 }
 
 void MIX_Reset(void)

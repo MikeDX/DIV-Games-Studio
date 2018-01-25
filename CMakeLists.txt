@@ -31,6 +31,14 @@ IF(NOT TARGETOS)
 
 ENDIF()
 
+#Check for OS Dependant functions and fall back to linux osdep if not set
+
+IF(NOT OSDEP)
+	SET(OSDEP "src/shared/osdep.c")
+ENDIF()
+
+
+
 # set TARGET to lower
 STRING( TOLOWER ${TARGETOS} LTARGET )
 
@@ -47,11 +55,6 @@ ELSE()
 	SET(BUILD_LEVEL " -O1 ")
 ENDIF()
 
-#Check for OS Dependant functions and fall back to linux osdep if not set
-
-IF(NOT OSDEP)
-	SET(OSDEP "src/shared/osdep.c")
-ENDIF()
 
 IF(HAS_DLL) 
 	SET(DLLSRC "src/shared/mikedll.c")
