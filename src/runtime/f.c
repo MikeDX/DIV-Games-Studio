@@ -217,9 +217,22 @@ FILE * open_multi(char *file, char *mode) {
 
 //fprintf(stdout,"Trying to open %s\n",full);
 
-  if ((f=fopen(full,mode))) // "paz\fixero.est"
+  if ((f=fopen(full,mode))) // "DiR/fiLE.ExT"
     return f;
 
+  strupr(full);
+
+//fprintf(stdout,"Trying to open %s\n",full);
+
+  if ((f=fopen(full,mode))) // "DIR/FILE.EXT"
+    return f;
+
+  strlwr(full);
+
+//fprintf(stdout,"Trying to open %s\n",full);
+
+  if ((f=fopen(full,mode))) // "dir/file.ext"
+    return f;
     
   if (_fullpath(full,(char*)file,_MAX_PATH)==NULL) 
     return(NULL);
@@ -238,7 +251,7 @@ FILE * open_multi(char *file, char *mode) {
 
 //fprintf(stdout,"Trying to open %s\n",full);
 
-  if ((f=fopen(full,mode))) // "est\paz\fixero.est"
+  if ((f=fopen(full,mode))) // "ExT/DiR/fiLE.ExT"
     return f;
 
 #ifdef DEBUG  
@@ -250,7 +263,14 @@ FILE * open_multi(char *file, char *mode) {
 
 //fprintf(stdout,"Trying to open %s\n",full);
 
-  if ((f=fopen(full,mode))) // "est\paz\fixero.est"
+  if ((f=fopen(full,mode))) // "EXT/DIR/FILE.EXT"
+    return f;
+
+  strlwr(full);
+
+//fprintf(stdout,"Trying to open %s\n",full);
+
+  if ((f=fopen(full,mode))) // "ext/dir/file.ext"
   return f;
 
 #ifdef DEBUG
@@ -263,7 +283,7 @@ FILE * open_multi(char *file, char *mode) {
 
 //fprintf(stdout,"Trying to open %s\n",full);
 
-  if ((f=fopen(full,mode))) // "fixero.est"
+  if ((f=fopen(full,mode))) // "fiLE.ExT"
     return f;
 
 #ifdef DEBUG
@@ -275,7 +295,7 @@ FILE * open_multi(char *file, char *mode) {
 
 //fprintf(stdout,"Trying to open %s\n",full);
 
-  if ((f=fopen(full,mode))) // "fixero.est"
+  if ((f=fopen(full,mode))) // "FILE.EXT"
     return f;
 
 #ifdef DEBUG
@@ -287,7 +307,7 @@ FILE * open_multi(char *file, char *mode) {
 
 //fprintf(stdout,"Trying to open %s\n",full);
 
-  if ((f=fopen(full,mode))) // "fixero.est"
+  if ((f=fopen(full,mode))) // "file.ext"
     return f;
 
 #ifdef DEBUG
@@ -306,7 +326,9 @@ FILE * open_multi(char *file, char *mode) {
   strcat(full,fname);
   strcat(full,ext);
 
-  if ((f=fopen(full,mode))) // "est\fixero.est"
+//fprintf(stdout,"Trying to open %s\n",full);
+
+  if ((f=fopen(full,mode))) // "ExT/fiLE.ExT"
     return f;
 
 #ifdef DEBUG
@@ -314,9 +336,18 @@ FILE * open_multi(char *file, char *mode) {
     return f;
 #endif
 
+  strupr(full);
+
+//fprintf(stdout,"Trying to open %s\n",full);
+
+  if ((f=fopen(full,mode))) // "EXT/FILE.EXT"
+    return f;
+
   strlwr(full);
 
-  if ((f=fopen(full,mode))) // "est\fixero.est"
+//fprintf(stdout,"Trying to open %s\n",full);
+
+  if ((f=fopen(full,mode))) // "ext/file.ext"
     return f;
 
 #ifdef DEBUG
