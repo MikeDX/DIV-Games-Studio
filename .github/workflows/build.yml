@@ -48,6 +48,9 @@ jobs:
 
       - name: Configure
         run: |
+          mkdir build
+          cd build
+
           if [ "$matrix.arch" == "x86_64" ]; then
             cmake -S . -B build -DUSE_SDL=2
           elif [ "$matrix.arch" == "armv7l" ]; then
