@@ -28,9 +28,9 @@ jobs:
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
             sudo apt-get update -y
-            sudo apt-get install -y cmake libsdl2-dev libsdl2-mixer-dev
+            sudo apt-get install -y cmake libsdl2-dev libsdl2-mixer-dev libsdl2-net-dev
           elif [ "$RUNNER_OS" == "Windows" ]; then
-            choco install -y cmake mingw sdl2 sdl2_mixer
+            choco install -y cmake mingw sdl2 sdl2_mixer sdl2_net
           else
             brew update
             brew install cmake sdl2 sdl2_mixer
