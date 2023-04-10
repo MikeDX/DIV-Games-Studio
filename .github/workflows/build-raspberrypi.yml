@@ -21,7 +21,7 @@ jobs:
 
       - name: Build
         run: |
-          cmake . -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/armv7-rpi-linux-gnueabihf.cmake -DUSE_SDL=2
+          cmake . -DCMAKE_TOOLCHAIN_FILE=./tools/armv7-rpi-linux-gnueabihf.cmake -DUSE_SDL=2
           cmake --build . --config Release
 
 #      - name: Test
