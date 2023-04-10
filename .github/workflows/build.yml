@@ -32,18 +32,18 @@ jobs:
 
       - name: Install dependencies
         run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
+          if [ "$matrix.os" == "ubuntu-latest" ]; then
             sudo apt-get update -y
             sudo apt-get install -y cmake libsdl2-dev libsdl2-mixer-dev libsdl2-net-dev
-            if ($env:matrix_arch -eq "armv7l") {
+            if [ "$matrix.arch" == "armv7l" ]; then
               sudo apt-get install -y gcc-arm-linux-gnueabihf
               export CC=arm-linux-gnueabihf-gcc
-            }
-          elif [ "$RUNNER_OS" == "Windows" ]; then
-            choco install -y cmake mingw sdl2 sdl2_mixer sdl2_net
-          else
+            fi
+          elif [ "$matrix.os" == "macos-latest" ]; then
             brew update
-            brew install cmake sdl2 sdl2_mixer
+            brew install cmake sdl2 sdl2_mixer sdl2_net
+          elif [ "$matrix.os" == "windows-latest" ]; then
+            choco install -y cmake mingw sdl2 sdl2_mixer sdl2_net
           fi
 
       - name: Configure
