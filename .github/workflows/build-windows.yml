@@ -15,7 +15,7 @@ jobs:
         run: |
           choco install -y cmake mingw
           
-       - name: Download SDL2, SDL2_mixer, and SDL2_net
+      - name: Download SDL2, SDL2_mixer, and SDL2_net
         run: |
           curl -L https://www.libsdl.org/release/SDL2-devel-2.0.16-mingw.tar.gz -o SDL2.tar.gz
           curl -L https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-devel-2.0.4-mingw.tar.gz -o SDL2_mixer.tar.gz
