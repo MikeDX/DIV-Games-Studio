@@ -1,0 +1,34 @@
+name: Build for Windows 64bit
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          choco install -y cmake mingw sdl2 sdl2_mixer sdl2_net
+
+      - name: Build
+        run: |
+          mkdir build
+          cd build
+          cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DUSE_SDL=2
+          cmake --build . --config Release
+
+#      - name: Test
+#        run: |
+#          cd build
+#          ctest --output-on-failure
+
+#      - name: Upload binaries
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: windows-binaries
+#          path: build/bin
