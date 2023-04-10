@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        arch: [x86_64, armv7l]
+        arch: [x86_64, armv7l, default]
         include:
           - os: ubuntu-latest
             arch: armv7l
@@ -20,8 +20,10 @@ jobs:
             arch: x86_64
             compiler: gcc
           - os: macos-latest
+            arch: default
             compiler: clang
           - os: windows-latest
+            arch: x86_64
             compiler: msvc
 
     steps:
