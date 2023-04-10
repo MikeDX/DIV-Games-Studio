@@ -10,11 +10,15 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
+        arch: [x86_64, armv7l]
         include:
           - os: ubuntu-latest
+            arch: armv7l
             compiler: gcc
+
           - os: ubuntu-latest
-            compiler: clang
+            arch: x86_64
+            compiler: gcc
           - os: macos-latest
             compiler: clang
           - os: windows-latest
@@ -29,6 +33,10 @@ jobs:
           if [ "$RUNNER_OS" == "Linux" ]; then
             sudo apt-get update -y
             sudo apt-get install -y cmake libsdl2-dev libsdl2-mixer-dev libsdl2-net-dev
+            if [ "$matrix.arch" == "armv7l" ]; then
+              sudo apt-get install -y gcc-arm-linux-gnueabihf
+              export CC=arm-linux-gnueabihf-gcc
+            fi
           elif [ "$RUNNER_OS" == "Windows" ]; then
             choco install -y cmake mingw sdl2 sdl2_mixer sdl2_net
           else
@@ -37,7 +45,14 @@ jobs:
           fi
 
       - name: Configure
-        run: cmake -S . -B build -DUSE_SDL=2
+        run: |
+          if [ "$matrix.arch" == "x86_64" ]; then
+            cmake -S . -B build -DUSE_SDL=2
+          elif [ "$matrix.arch" == "armv7l" ]; then
+            cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/arm-linux-gnueabihf.cmake -DUSE_SDL=2
+          fi
+          
+#        run: cmake -S . -B build -DUSE_SDL=2
 
       - name: Build
         run: cmake --build build --config Release
