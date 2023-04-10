@@ -1,0 +1,31 @@
+name: Build for Linux x64 with SDL2, SDL2_mixer, and SDL2_net
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-linux-x64:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y cmake libsdl2-dev libsdl2-mixer-dev libsdl2-net-dev
+
+      - name: Build
+        run: |
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DUSE_SDL=2
+          cmake --build . --config Release
+
+#      - name: Test
+#        run: |
+#          cd build
+#          ctest --output-on-failure
