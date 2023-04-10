@@ -1,0 +1,36 @@
+name: Build for Raspberry Pi
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-raspberrypi:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [ armv7l ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y cmake libsdl2-dev libsdl2-mixer-dev libsdl2-net-dev
+
+      - name: Build
+        run: |
+          cmake . -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/armv7-rpi-linux-gnueabihf.cmake -DUSE_SDL=2
+          cmake --build . --config Release
+
+#      - name: Test
+#        run: |
+#          cd build
+#          ctest --output-on-failure
+
+#      - name: Upload binaries
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: raspberrypi-binaries
+#          path: build/bin
