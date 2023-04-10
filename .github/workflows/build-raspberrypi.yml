@@ -23,7 +23,7 @@ jobs:
       - name: Build
         run: |
           echo `which gcc-arm-linux-gnueabihf`
-          cmake . -DCMAKE_MODULE_PATH=./tools -DCMAKE_TOOLCHAIN_FILE=./tools/armv7-rpi-linux-gnueabihf.cmake -DUSE_SDL=2 
+          cmake . -DDCMAKE_PREFIX_PATH=/usr/local/lib/cmake/SDL2 -DCMAKE_MODULE_PATH=./tools -DCMAKE_TOOLCHAIN_FILE=./tools/armv7-rpi-linux-gnueabihf.cmake -DUSE_SDL=2 
           cmake --build . --config Release
 
 #      - name: Test
