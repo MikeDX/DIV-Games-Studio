@@ -25,6 +25,7 @@ jobs:
 
       - name: Build
         run: |
+          mkdir system
           mkdir build
           cd build
           cmake .. -DCMAKE_BUILD_TYPE=Release -DUSE_SDL=2
