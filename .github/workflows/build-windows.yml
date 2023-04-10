@@ -13,13 +13,23 @@ jobs:
 
       - name: Install dependencies
         run: |
-          choco install -y cmake mingw sdl2 sdl2_mixer sdl2_net
+          choco install -y cmake mingw
+          
+       - name: Download SDL2, SDL2_mixer, and SDL2_net
+        run: |
+          curl -L https://www.libsdl.org/release/SDL2-devel-2.0.16-mingw.tar.gz -o SDL2.tar.gz
+          curl -L https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-devel-2.0.4-mingw.tar.gz -o SDL2_mixer.tar.gz
+          curl -L https://www.libsdl.org/projects/SDL_net/release/SDL2_net-devel-2.0.1-mingw.tar.gz -o SDL2_net.tar.gz
+          mkdir -p libs
+          tar -xvf SDL2.tar.gz -C libs/
+          tar -xvf SDL2_mixer.tar.gz -C libs/
+          tar -xvf SDL2_net.tar.gz -C libs/
+          export PATH=$PATH:/github/workspace/libs/SDL2-2.0.16/x86_64-w64-mingw32/bin:/github/workspace/libs/SDL2_mixer-2.0.4/x86_64-w64-mingw32/bin:/github/workspace/libs/SDL2_net-2.0.1/x86_64-w64-mingw32/bin
+
 
       - name: Build
         run: |
-          mkdir build
-          cd build
-          cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DUSE_SDL=2
+          cmake . -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DUSE_SDL=2
           cmake --build . --config Release
 
 #      - name: Test
