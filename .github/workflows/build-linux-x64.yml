@@ -2,9 +2,7 @@ name: Build for Linux x64 with SDL2, SDL2_mixer, and SDL2_net
 
 on:
   push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
 
 jobs:
   build-linux-x64:
