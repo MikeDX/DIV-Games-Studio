@@ -26,14 +26,14 @@ jobs:
 
       - name: Install dependencies
         run: |
-          if [ "$matrix.os" == "ubuntu-latest" ]; then
+          if [ "$RUNNER_OS" == "Linux" ]; then
             sudo apt-get update -y
             sudo apt-get install -y cmake libsdl2-dev libsdl2-mixer-dev
-          elif [ "$matrix.os" == "macos-latest" ]; then
+          elif [ "$RUNNER_OS" == "Windows" ]; then
+            choco install -y cmake mingw sdl2 sdl2_mixer
+          else then
             brew update
             brew install cmake sdl2 sdl2_mixer
-          elif [ "$matrix.os" == "windows-latest" ]; then
-            choco install -y cmake mingw sdl2 sdl2_mixer
           fi
 
       - name: Configure
