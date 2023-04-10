@@ -25,10 +25,7 @@ jobs:
 
       - name: Build
         run: |
-          mkdir system
-          mkdir build
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Release -DUSE_SDL=2
+          cmake . -DCMAKE_BUILD_TYPE=Release -DUSE_SDL=2
           cmake --build . --config Release
 
 #      - name: Test
