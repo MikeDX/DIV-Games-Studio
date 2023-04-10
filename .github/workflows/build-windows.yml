@@ -24,7 +24,7 @@ jobs:
           tar -xvf SDL2.tar.gz -C libs/
           tar -xvf SDL2_mixer.tar.gz -C libs/
           tar -xvf SDL2_net.tar.gz -C libs/
-          export PATH=$PATH:/github/workspace/libs/SDL2-2.0.16/x86_64-w64-mingw32/bin:/github/workspace/libs/SDL2_mixer-2.0.4/x86_64-w64-mingw32/bin:/github/workspace/libs/SDL2_net-2.0.1/x86_64-w64-mingw32/bin
+          setx PATH "$env:PATH;${{ github.workspace }}/libs/SDL2-2.0.16/x86_64-w64-mingw32/bin;${{ github.workspace }}/libs/SDL2_mixer-2.0.4/x86_64-w64-mingw32/bin;${{ github.workspace }}/libs/SDL2_net-2.0.1/x86_64-w64-mingw32/bin"
 
 
       - name: Build
