@@ -35,10 +35,10 @@ jobs:
           if [ "$RUNNER_OS" == "Linux" ]; then
             sudo apt-get update -y
             sudo apt-get install -y cmake libsdl2-dev libsdl2-mixer-dev libsdl2-net-dev
-            if [ "$matrix.arch" == "armv7l" ]; then
+            if ($env:matrix_arch -eq "armv7l") {
               sudo apt-get install -y gcc-arm-linux-gnueabihf
               export CC=arm-linux-gnueabihf-gcc
-            fi
+            }
           elif [ "$RUNNER_OS" == "Windows" ]; then
             choco install -y cmake mingw sdl2 sdl2_mixer sdl2_net
           else
